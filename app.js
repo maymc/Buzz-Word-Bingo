@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const PORT = process.env.PORT || 8001;
 const bodyParser = require('body-parser');
 
 // //Tell Express to use a static directory that we define as the location to look for requests
@@ -20,14 +21,16 @@ const bodyParser = require('body-parser');
 // let urlencodedParser = bodyParser.urlencoded({ extended: true });
 // //console.log("\nurlencodedParser: ", urlencodedParser);
 
+// console.log("request method:", req.method);
+// console.log("request path:", req.path);
+// console.log("response:", res);
+
 //GET request
 app.get('/', (req, res) => {
-  res.send("Hello World!!!!!");
-  // console.log("\nServing `index.html`");
-  // res.sendFile(__dirname + '/public/index.html');
-  // console.log("request method:", req.method);
-  // console.log("request path:", req.path);
-  // console.log("response:", res);
+  console.log("\nServing `index.html`");
+
+  //This takes in a path. `dirname` is an absolute path. It is safer to use that and then add the rest of the path that you want.
+  res.sendFile(__dirname + '/public/index.html');
 });
 
 // app.get('/buzzwords', (req, res) => {
@@ -41,38 +44,24 @@ app.get('/', (req, res) => {
 //   res.send(`{"success": true}`)
 // });
 
-// //PUT
-// app.put('/buzzwords', urlencodedParser, (req, res) => {
-
-// })
-// //DELETE
-// app.put('/buzzwords', urlencodedParser, (req, res) => {
-
-// })
-// //POST
-// app.put('/reset', urlencodedParser, (req, res) => {
-
-// })
-// //POST
-// app.put('/heard', urlencodedParser, (req, res) => {
-
-// })
-
 // //POST /api/users gets JSON bodies
 // app.post('/api/users', jsonParser, (req, res) => {
 //   //create user in req.body
 // })
 
-
-
+//GET request - catch all for other requests not specified
+app.get('*', (req, res) => {
+  //Error message
+  console.log("\nError: File could not be found. Invalid request.");
+  res.sendStatus(404);
+});
 
 
 
 // Server is listening
-const server = app.listen(8001, () => {
+const server = app.listen(PORT, () => {
   console.log("Server address: ", server.address());
   const host = server.address().address;
-  const port = server.address().port;
 
-  console.log(`App listening at http://${host}:${port}`);
+  console.log(`App listening at http://${host}:${PORT}`);
 });
