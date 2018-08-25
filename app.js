@@ -22,8 +22,9 @@ const bodyParser = require('body-parser');
 
 //GET request
 app.get('/', (req, res) => {
-  console.log("\nServing `index.html`");
-  res.sendFile(__dirname + '/public/index.html');
+  res.send("Hello World!!!!!");
+  // console.log("\nServing `index.html`");
+  // res.sendFile(__dirname + '/public/index.html');
   // console.log("request method:", req.method);
   // console.log("request path:", req.path);
   // console.log("response:", res);
@@ -69,9 +70,9 @@ app.get('/', (req, res) => {
 
 // Server is listening
 const server = app.listen(8001, () => {
-  console.log("server address: ", server.address());
+  console.log("Server address: ", server.address());
   const host = server.address().address;
   const port = server.address().port;
 
-  console.log(`Example app listening at http://${host}:${port}`);
+  console.log(`App listening at http://${host}:${port}`);
 });
