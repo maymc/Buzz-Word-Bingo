@@ -25,13 +25,26 @@ const bodyParser = require('body-parser');
 // console.log("request path:", req.path);
 // console.log("response:", res);
 
-//GET request
-app.get('/', (req, res) => {
+//GET "/" request
+app.get("/", (req, res) => {
   console.log("\nServing `index.html`");
 
   //This takes in a path. `dirname` is an absolute path. It is safer to use that and then add the rest of the path that you want.
   res.sendFile(__dirname + '/public/index.html');
 });
+
+//GET "/buzzword" request
+//Array containing objects
+const buzzWords = [
+  {
+    //empty
+  }
+];
+
+app.get("/buzzwords", (req, res) => {
+  console.log("\nGetting buzzwords...");
+  res.json(buzzWords);
+})
 
 // app.get('/buzzwords', (req, res) => {
 //   console.log(buzzWordsArr);
