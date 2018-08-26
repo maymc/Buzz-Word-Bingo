@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 8001;
+const qs = require("querystring");
 const bodyParser = require('body-parser');
 
 // //Tell Express to use a static directory that we define as the location to look for requests
@@ -35,32 +36,33 @@ app.get("/", (req, res) => {
 
 //GET "/buzzword" request
 //Array containing objects
-const buzzWords = [
-  {
-    //empty
-  }
-];
+let buzzWords = [];
+let buzzWordsCount = 0;
 
 app.get("/buzzwords", (req, res) => {
   console.log("\nGetting buzzwords...");
   res.json(buzzWords);
 })
 
-// app.get('/buzzwords', (req, res) => {
-//   console.log(buzzWordsArr);
-//   res.send(`{"success": true}`);
-//   res.sendFile(__dirname + '/public/index.html');
-// })
+//POST "/buzzword" route
+app.post("/buzzword", (req, res) => {
 
-// //POST /buzzwords gets urlencoded bodies
-// app.post('/buzzwords', urlencodedParser, (req, res) => {
-//   res.send(`{"success": true}`)
-// });
+  //Push chunk into the buzzwords array. Chunk is a buffer
+  let body = [];
+  req.on("data", chunk => {
+    body.push(chunk);
+    console.log("chunk: ", body);
+  }).on("end", () => {
+    body = Buffer.concat(body).toString();
+    let parsedBuzzWords = qs.parse(body);
+    buzzWords.push(parsedBuzzWords);
+    console.log("buzzWords Arr: ", buzzWords);
+  })
 
-// //POST /api/users gets JSON bodies
-// app.post('/api/users', jsonParser, (req, res) => {
-//   //create user in req.body
-// })
+  res.send(`{"success": true}`);
+});
+
+
 
 //GET request - catch all for other requests not specified
 app.get('*', (req, res) => {
