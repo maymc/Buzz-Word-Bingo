@@ -53,10 +53,11 @@ app.post("/buzzword", (req, res) => {
     body.push(chunk);
     //console.log("chunk: ", body);
   }).on("end", () => {
+    //Converts buffer to a string
     body = Buffer.concat(body).toString();
     let parsedBuzzWords = qs.parse(body);
 
-    if (`${parsedBuzzWords.buzzword}` !== "" && `${parsedBuzzWords.points}` !== "" && `${parsedBuzzWords.heard}` !== "") {
+    if (`${parsedBuzzWords.buzzword}` !== "" && `${parsedBuzzWords.points}` !== "" && `${parsedBuzzWords.heard}` !== "" && buzzWords.length !== 5) {
       buzzWords.push(parsedBuzzWords);
       console.log("\nbuzzWords Arr: ", buzzWords);
       res.send(`{"success": true}`);
@@ -70,7 +71,35 @@ app.post("/buzzword", (req, res) => {
 });
 
 //PUT "/buzzword" route
+app.put("/buzzword", (req, res) => {
+  let bodyPUT = [];
 
+  req.on("data", chunk => {
+    bodyPUT.push(chunk);
+
+  }).on("end", () => {
+    //Converts buffer to a string
+    bodyPUT = Buffer.concat(bodyPUT).toString();
+    let parsedBuzzWordsPUT = qs.parse(bodyPUT);
+
+    if (`${parsedBuzzWordsPUT.buzzword}` !== "" && `${parsedBuzzWordsPUT.points}` !== "" && `${parsedBuzzWordsPUT.heard}` !== "") {
+      //Iterate through the buzzword array and find the buzzword that matches the one requested and update the points
+      console.log("\n**Old buzzWords: ", buzzWords);
+      buzzWords.forEach(element => {
+        if (element.buzzword === parsedBuzzWordsPUT.buzzword) {
+          element.points = parsedBuzzWordsPUT.points;
+          res.send(`{"success": true}`);
+        }
+      })
+      console.log("\n**Updated buzzWords: ", buzzWords);
+    }
+    else {
+      console.log("\nError with updating the buzzword.")
+      res.send(`{"success": false}`);
+    }
+
+  })
+})
 
 
 
