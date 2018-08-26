@@ -51,16 +51,26 @@ app.post("/buzzword", (req, res) => {
   let body = [];
   req.on("data", chunk => {
     body.push(chunk);
-    console.log("chunk: ", body);
+    //console.log("chunk: ", body);
   }).on("end", () => {
     body = Buffer.concat(body).toString();
     let parsedBuzzWords = qs.parse(body);
-    buzzWords.push(parsedBuzzWords);
-    console.log("buzzWords Arr: ", buzzWords);
-  })
 
-  res.send(`{"success": true}`);
+    if (`${parsedBuzzWords.buzzword}` !== "" && `${parsedBuzzWords.points}` !== "" && `${parsedBuzzWords.heard}` !== "") {
+      buzzWords.push(parsedBuzzWords);
+      console.log("\nbuzzWords Arr: ", buzzWords);
+      res.send(`{"success": true}`);
+    }
+    else {
+      console.log("\nError with entering a buzzword.")
+      res.send(`{"success": false}`);
+    }
+  });
+
 });
+
+//PUT "/buzzword" route
+
 
 
 
