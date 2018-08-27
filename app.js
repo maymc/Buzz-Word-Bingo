@@ -8,37 +8,16 @@ let userTotalScore = 0;
 app.use((req, res, next) => {
   console.log(`\n--> ${req.method} request at ${req.url}`);
   next();
-})
+});
 
 //Tell Express to use a static directory that we define as the location to look for requests
 app.use(express.static('public'));
 
-// //Create application/json parser
-// //This is a function
-// let jsonParser = bodyParser.json();
-// //console.log("\njsonParser: ", jsonParser);
-
-// //Create application/x-www-form-urlencoded parser
-// //'extended = true means the object's key-value pairs' value can be any type, not just string or array
-// //This is a function
-// let urlencodedParser = bodyParser.urlencoded({ extended: true });
-// //console.log("\nurlencodedParser: ", urlencodedParser);
-
-// console.log("request method:", req.method);
-// console.log("request path:", req.path);
-// console.log("response:", res);
-
-// //GET "/" request
-// app.get("/", (req, res) => {
-//   console.log("\nServing `index.html`");
-
-//   //This takes in a path. `dirname` is an absolute path. It is safer to use that and then add the rest of the path that you want.
-//   //res.sendFile(__dirname + '/public/index.html');
-// });
+//For parsing application/x-www-form-urlencoded. 'extended = true' means the object's key-value pairs' value can be any type, not just string or array. This is a function. It replaces the code needed to parse the buffer for request bodies and returns the already parsed information/object as "req.body".
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //GET "/buzzword" request
-//Array containing objects
-let buzzWords = [];
+let buzzWords = [];   //Array containing objects
 
 app.get("/buzzwords", (req, res) => {
   console.log("\nGetting buzzwords...");
@@ -49,26 +28,27 @@ app.get("/buzzwords", (req, res) => {
 //POST "/buzzwords" route
 app.post("/buzzwords", (req, res) => {
 
-  //Push chunk into the buzzwords array. Chunk is a buffer
-  let body = [];
-  req.on("data", chunk => {
-    body.push(chunk);
-    //console.log("chunk: ", body);
-  }).on("end", () => {
-    //Converts buffer to a string
-    body = Buffer.concat(body).toString();
-    let parsedBuzzWords = qs.parse(body);
+  console.log("req.body:", req.body);
+  // //Push chunk into the buzzwords array. Chunk is a buffer
+  // let body = [];
+  // req.on("data", chunk => {
+  //   body.push(chunk);
+  //   //console.log("chunk: ", body);
+  // }).on("end", () => {
+  //   //Converts buffer to a string
+  //   body = Buffer.concat(body).toString();
+  //   let parsedBuzzWords = qs.parse(body);
 
-    if (`${parsedBuzzWords.buzzword}` !== "" && `${parsedBuzzWords.points}` !== "" && `${parsedBuzzWords.heard}` !== "" && buzzWords.length !== 5) {
-      buzzWords.push(parsedBuzzWords);
-      console.log("\nbuzzWords Arr:\n", buzzWords);
-      res.send(`{"success": true}`);
-    }
-    else {
-      console.log("\nError with entering a buzzword.")
-      res.send(`{"success": false}`);
-    }
-  });
+  // if (`${parsedBuzzWords.buzzword}` !== "" && `${parsedBuzzWords.points}` !== "" && `${parsedBuzzWords.heard}` !== "" && buzzWords.length !== 5) {
+  //   buzzWords.push(parsedBuzzWords);
+  //   console.log("\nbuzzWords Arr:\n", buzzWords);
+  //   res.send(`{"success": true}`);
+  // }
+  // else {
+  //   console.log("\nError with entering a buzzword.")
+  //   res.send(`{"success": false}`);
+  // }
+  //});
 
 });
 
