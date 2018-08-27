@@ -27,29 +27,17 @@ app.get("/buzzwords", (req, res) => {
 
 //POST "/buzzwords" route
 app.post("/buzzwords", (req, res) => {
-
   console.log("req.body:", req.body);
-  // //Push chunk into the buzzwords array. Chunk is a buffer
-  // let body = [];
-  // req.on("data", chunk => {
-  //   body.push(chunk);
-  //   //console.log("chunk: ", body);
-  // }).on("end", () => {
-  //   //Converts buffer to a string
-  //   body = Buffer.concat(body).toString();
-  //   let parsedBuzzWords = qs.parse(body);
 
-  // if (`${parsedBuzzWords.buzzword}` !== "" && `${parsedBuzzWords.points}` !== "" && `${parsedBuzzWords.heard}` !== "" && buzzWords.length !== 5) {
-  //   buzzWords.push(parsedBuzzWords);
-  //   console.log("\nbuzzWords Arr:\n", buzzWords);
-  //   res.send(`{"success": true}`);
-  // }
-  // else {
-  //   console.log("\nError with entering a buzzword.")
-  //   res.send(`{"success": false}`);
-  // }
-  //});
-
+  if (req.body.buzzword !== "" && req.body.points !== "" && req.body.heard !== "" && buzzWords.length !== 5) {
+    buzzWords.push(req.body);
+    console.log("\nbuzzWords Arr:\n", buzzWords);
+    res.send(`{"success": true}`);
+  }
+  else {
+    console.log("\nError with entering a buzzword.")
+    res.send(`{"success": false}`);
+  }
 });
 
 //PUT "/buzzwords" route
