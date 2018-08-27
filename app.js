@@ -5,8 +5,13 @@ const qs = require("querystring");
 const bodyParser = require('body-parser');
 let userTotalScore = 0;
 
-// //Tell Express to use a static directory that we define as the location to look for requests
-// //app.use(express.static('public'));
+app.use((req, res, next) => {
+  console.log(`\n--> ${req.method} request at ${req.url}`);
+  next();
+})
+
+//Tell Express to use a static directory that we define as the location to look for requests
+app.use(express.static('public'));
 
 // //Create application/json parser
 // //This is a function
@@ -23,13 +28,13 @@ let userTotalScore = 0;
 // console.log("request path:", req.path);
 // console.log("response:", res);
 
-//GET "/" request
-app.get("/", (req, res) => {
-  console.log("\nServing `index.html`");
+// //GET "/" request
+// app.get("/", (req, res) => {
+//   console.log("\nServing `index.html`");
 
-  //This takes in a path. `dirname` is an absolute path. It is safer to use that and then add the rest of the path that you want.
-  res.sendFile(__dirname + '/public/index.html');
-});
+//   //This takes in a path. `dirname` is an absolute path. It is safer to use that and then add the rest of the path that you want.
+//   //res.sendFile(__dirname + '/public/index.html');
+// });
 
 //GET "/buzzword" request
 //Array containing objects
@@ -37,6 +42,7 @@ let buzzWords = [];
 
 app.get("/buzzwords", (req, res) => {
   console.log("\nGetting buzzwords...");
+  //This parses incoming requests w/JSON payloads and is based on body-parser. Only parses JSON and a new body object containing the parsed data is populated on the req object after the middleware (ie. req.body) or an empty object ({}) if there was no body to parse
   res.json(buzzWords);
 })
 
@@ -186,11 +192,9 @@ app.post("/heard", (req, res) => {
 //GET request - catch all for other requests not specified
 app.get('*', (req, res) => {
   //Error message
-  console.log("\nError: File could not be found. Invalid request.");
+  console.log("\nERROR: File could not be found. Invalid request.");
   res.sendStatus(404);
 });
-
-
 
 // Server is listening
 const server = app.listen(PORT, () => {
