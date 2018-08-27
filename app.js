@@ -104,36 +104,27 @@ app.post("/reset", (req, res) => {
 //POST "/heard" route
 app.post("/heard", (req, res) => {
   //Marks that a buzzword has been heard and should update the total score. Returns the new total score if successful otherwise returns just false
-  let bodyHEARD = [];
   let wordHeardFlag = false;
 
-  req.on("data", chunk => {
-    bodyHEARD.push(chunk);
-  }).on("end", () => {
-    //Converts buffer to a string
-    bodyHEARD = Buffer.concat(bodyHEARD).toString();
-    let parsedBuzzWordsHEARD = qs.parse(bodyHEARD);
-
-    buzzWords.forEach(element => {
-      if (element.buzzword === parsedBuzzWordsHEARD.buzzword) {
-        userTotalScore += Number(parsedBuzzWordsHEARD.points);
-        wordHeardFlag = true;
-        return userTotalScore;
-      }
-      else {
-        wordHeardFlag = false;
-        return wordHeardFlag;
-      }
-    })
-    if (wordHeardFlag) {
-      console.log("\nNew Updated Score: ", userTotalScore)
-      res.send(`New Total Score: ${userTotalScore}`)
+  buzzWords.forEach(element => {
+    if (element.buzzword === req.body.buzzword) {
+      userTotalScore += Number(req.body.points);
+      wordHeardFlag = true;
+      return userTotalScore;
     }
     else {
-      console.log("\nERROR: buzzword not heard")
-      res.send(`{success: ${wordHeardFlag}}`)
+      wordHeardFlag = false;
+      return wordHeardFlag;
     }
-  });
+  })
+  if (wordHeardFlag) {
+    console.log(`\nHeard: "${req.body.buzzword}"\nNew Updated Score: ${userTotalScore}`)
+    res.send(`New Total Score: ${userTotalScore}`)
+  }
+  else {
+    console.log("\nERROR: Not one of your buzzwords.")
+    res.send(`{success: ${wordHeardFlag}}`)
+  }
 });
 
 //GET request - catch all for other requests not specified
