@@ -3,6 +3,7 @@ const app = express();
 const PORT = process.env.PORT || 8001;
 const qs = require("querystring");
 const bodyParser = require('body-parser');
+let userTotalScore = 0;
 
 // //Tell Express to use a static directory that we define as the location to look for requests
 // //app.use(express.static('public'));
@@ -137,7 +138,48 @@ app.delete("/buzzwords", (req, res) => {
   });
 });
 
+//POST "/reset" route
+app.post("/reset", (req, res) => {
+  //Resets the server, all buzzwords are removed and total score is reset to 0
+  buzzWords = [];
+  userTotalScore = 0;
+  console.log("\nbuzzWords after reset: ", buzzWords);
+  console.log("\nuser score after reset: ", userTotalScore);
+  res.send(`{success: true}`);
+});
 
+//POST "/heard" route
+app.post("/heard", (req, res) => {
+  //Marks that a buzzword has been heard and should update the total score. Returns the new total score if successful otherwise returns just false
+  let bodyHEARD = [];
+  let wordHeardFlag = false;
+
+  req.on("data", chunk => {
+    bodyHEARD.push(chunk);
+  }).on("end", () => {
+    //Converts buffer to a string
+    bodyHEARD = Buffer.concat(bodyHEARD).toString();
+    let parsedBuzzWordsHEARD = qs.parse(bodyHEARD);
+
+    buzzWords.forEach(element => {
+      if (element.buzzword === parsedBuzzWordsHEARD.buzzword) {
+        userTotalScore += Number(parsedBuzzWordsHEARD.points);
+        wordHeardFlag = true;
+        return userTotalScore;
+      }
+      else {
+        wordHeardFlag = false;
+        return wordHeardFlag;
+      }
+    })
+    if (wordHeardFlag) {
+      res.send(`New Total Score: ${userTotalScore}`)
+    }
+    else {
+      res.send(`{success: ${wordHeardFlag}}`)
+    }
+  });
+});
 
 //GET request - catch all for other requests not specified
 app.get('*', (req, res) => {
