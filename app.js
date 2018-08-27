@@ -7,10 +7,6 @@ const bodyParser = require('body-parser');
 // //Tell Express to use a static directory that we define as the location to look for requests
 // //app.use(express.static('public'));
 
-// //Storage for buzzword objects
-// let buzzWordsArr = [];
-// console.log("buzzWordsarr: ", buzzWordsArr);
-
 // //Create application/json parser
 // //This is a function
 // let jsonParser = bodyParser.json();
@@ -37,15 +33,14 @@ app.get("/", (req, res) => {
 //GET "/buzzword" request
 //Array containing objects
 let buzzWords = [];
-let buzzWordsCount = 0;
 
 app.get("/buzzwords", (req, res) => {
   console.log("\nGetting buzzwords...");
   res.json(buzzWords);
 })
 
-//POST "/buzzword" route
-app.post("/buzzword", (req, res) => {
+//POST "/buzzwords" route
+app.post("/buzzwords", (req, res) => {
 
   //Push chunk into the buzzwords array. Chunk is a buffer
   let body = [];
@@ -59,7 +54,7 @@ app.post("/buzzword", (req, res) => {
 
     if (`${parsedBuzzWords.buzzword}` !== "" && `${parsedBuzzWords.points}` !== "" && `${parsedBuzzWords.heard}` !== "" && buzzWords.length !== 5) {
       buzzWords.push(parsedBuzzWords);
-      console.log("\nbuzzWords Arr: ", buzzWords);
+      console.log("\nbuzzWords Arr:\n", buzzWords);
       res.send(`{"success": true}`);
     }
     else {
@@ -70,9 +65,10 @@ app.post("/buzzword", (req, res) => {
 
 });
 
-//PUT "/buzzword" route
-app.put("/buzzword", (req, res) => {
+//PUT "/buzzwords" route
+app.put("/buzzwords", (req, res) => {
   let bodyPUT = [];
+  let wordFoundFlag = false;
 
   req.on("data", chunk => {
     bodyPUT.push(chunk);
@@ -84,22 +80,29 @@ app.put("/buzzword", (req, res) => {
 
     if (`${parsedBuzzWordsPUT.buzzword}` !== "" && `${parsedBuzzWordsPUT.points}` !== "" && `${parsedBuzzWordsPUT.heard}` !== "") {
       //Iterate through the buzzword array and find the buzzword that matches the one requested and update the points
-      console.log("\n**Old buzzWords: ", buzzWords);
       buzzWords.forEach(element => {
         if (element.buzzword === parsedBuzzWordsPUT.buzzword) {
+          console.log("\n**Old buzzWords:\n", buzzWords);
           element.points = parsedBuzzWordsPUT.points;
-          res.send(`{"success": true}`);
+          console.log("\n**Updated buzzWords:\n", buzzWords);
+          wordFoundFlag = true;
+          return wordFoundFlag;
+        }
+        else {
+          console.log("\nERROR: Word not found.");
+          wordFoundFlag = false;
+          return wordFoundFlag;
         }
       })
-      console.log("\n**Updated buzzWords: ", buzzWords);
+      res.send(`{success: ${wordFoundFlag}}`);
     }
     else {
-      console.log("\nError with updating the buzzword.")
+      console.log("\nError with entering a buzzword.")
       res.send(`{"success": false}`);
     }
 
-  })
-})
+  });
+});
 
 
 

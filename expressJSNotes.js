@@ -1,20 +1,16 @@
-//Any return method already has res.end so don't need one
-//Response handlers explains this
+//Any return method already has res.end so don't need one. Response handlers explains this
 
-//Repsonse methods is important. 
-//res.json
-//If you res.json() an object it will return a JSON parsed object
+//Repsonse methods is important. res.json - If you res.json() an object it will return a JSON parsed object
 
 //Express.router - don't need to understand this yet for buzzwordbingo. Can figure this out afterwards
 
-//For our case, learnining HTTP servers is to go down through every single item. 
+//For our case, learning HTTP servers is to go down through every single item. 
 
 //Stuff from here will be similar across frameworks
 
 //Middleware example/demo (elemental demo)
 //First create the public files
 //Complex way first then simplify
-//npm install express
 
 //Express uses fs module behind the scenes, Uses a bunch of modules behind the scenes and creates an abstraction layer on top of everything we had ot do.
 const express = require('express');
@@ -59,11 +55,11 @@ app.use(express.static('public'));
 
 //Things are loading slow because it is loading from the hard drive. We will learn about caching
 
-// app.get('/', (req, res) => {
-//   // res.send('hello world');
-//   //takes in a path, dirname is an absolute path. it is safer.
-//   res.sendFile(__dirname + '/public/index.html');
-// });
+app.get('/', (req, res) => {
+  // res.send('hello world');
+  //takes in a path, dirname is an absolute path. it is safer.
+  res.sendFile(__dirname + '/public/index.html');
+});
 
 app.get('/css/styles.css', (req, res) => {
   res.sendFile(__dirname + '/public/styles.css');
@@ -92,14 +88,14 @@ app.post('/elements', (req, res) => {
 
   //This part we will use middleware instead.
   //Middleware will intercept request. Your request goes through a bunch of functions.
-  // let body = [];
-  // req.on('data', data => {
-  //   body.push(data);
-  // }).on('end', () => {
-  //   body = Buffer.concat(body).toString();
-  //   body = qs.parse(body);
-  //   console.log('body:', body);
-  // })
+  let body = [];
+  req.on('data', data => {
+    body.push(data);
+  }).on('end', () => {
+    body = Buffer.concat(body).toString();
+    body = qs.parse(body);
+    console.log('body:', body);
+  })
 
   console.log('body inside of post route handler:', req.body);
   const {
