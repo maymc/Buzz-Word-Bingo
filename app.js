@@ -173,9 +173,11 @@ app.post("/heard", (req, res) => {
       }
     })
     if (wordHeardFlag) {
+      console.log("\nNew Updated Score: ", userTotalScore)
       res.send(`New Total Score: ${userTotalScore}`)
     }
     else {
+      console.log("\nERROR: buzzword not heard")
       res.send(`{success: ${wordHeardFlag}}`)
     }
   });
