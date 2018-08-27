@@ -42,41 +42,30 @@ app.post("/buzzwords", (req, res) => {
 
 //PUT "/buzzwords" route
 app.put("/buzzwords", (req, res) => {
-  let bodyPUT = [];
   let wordFoundFlag = false;
 
-  req.on("data", chunk => {
-    bodyPUT.push(chunk);
-
-  }).on("end", () => {
-    //Converts buffer to a string
-    bodyPUT = Buffer.concat(bodyPUT).toString();
-    let parsedBuzzWordsPUT = qs.parse(bodyPUT);
-
-    if (`${parsedBuzzWordsPUT.buzzword}` !== "" && `${parsedBuzzWordsPUT.points}` !== "" && `${parsedBuzzWordsPUT.heard}` !== "") {
-      //Iterate through the buzzword array and find the buzzword that matches the one requested and update the points
-      buzzWords.forEach(element => {
-        if (element.buzzword === parsedBuzzWordsPUT.buzzword) {
-          console.log("\n**Old buzzWords:\n", buzzWords);
-          element.points = parsedBuzzWordsPUT.points;
-          console.log("\n**Updated buzzWords:\n", buzzWords);
-          wordFoundFlag = true;
-          return wordFoundFlag;
-        }
-        else {
-          console.log("\nERROR: Word not found.");
-          wordFoundFlag = false;
-          return wordFoundFlag;
-        }
-      })
-      res.send(`{success: ${wordFoundFlag}}`);
-    }
-    else {
-      console.log("\nError with entering a buzzword.")
-      res.send(`{"success": false}`);
-    }
-
-  });
+  if (req.body.buzzword !== "" && req.body.points !== "" && req.body.heard !== "") {
+    //Iterate through the buzzword array and find the buzzword that matches the one requested and update the points
+    buzzWords.forEach(element => {
+      if (element.buzzword === req.body.buzzword) {
+        console.log("\n**Old buzzWords:\n", buzzWords);
+        element.points = req.body.points;
+        console.log("\n**Updated buzzWords:\n", buzzWords);
+        wordFoundFlag = true;
+        return wordFoundFlag;
+      }
+      else {
+        console.log("\nERROR: Word not found.");
+        wordFoundFlag = false;
+        return wordFoundFlag;
+      }
+    })
+    res.send(`{success: ${wordFoundFlag}}`);
+  }
+  else {
+    console.log("\nError with entering a buzzword.")
+    res.send(`{"success": false}`);
+  }
 });
 
 //DELETE "/buzzwords" route
