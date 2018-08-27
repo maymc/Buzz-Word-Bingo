@@ -70,35 +70,25 @@ app.put("/buzzwords", (req, res) => {
 
 //DELETE "/buzzwords" route
 app.delete("/buzzwords", (req, res) => {
-
-  let bodyDELETE = [];
   let deletedFlag = false;
 
-  req.on("data", chunk => {
-    bodyDELETE.push(chunk);
-  }).on("end", () => {
-    //Converts buffer to a string
-    bodyDELETE = Buffer.concat(bodyDELETE).toString();
-    let parsedBuzzWordsDELETE = qs.parse(bodyDELETE);
-
-    buzzWords.forEach(element => {
-      if (element.buzzword === parsedBuzzWordsDELETE.buzzword) {
-        console.log("\nbuzzWords before DELETE:\n", buzzWords);
-        buzzWords = buzzWords.filter(element => {
-          return element.buzzword !== parsedBuzzWordsDELETE.buzzword;
-        });
-        console.log("\nbuzzWords after DELETE:\n", buzzWords);
-        deletedFlag = true;
-        return deletedFlag;
-      }
-      else {
-        console.log("\nError with deleting buzzword.");
-        deletedFlag = false;
-        return deletedFlag;
-      }
-    });
-    res.send(`{success: ${deletedFlag}}`);
+  buzzWords.forEach(element => {
+    if (element.buzzword === req.body.buzzword) {
+      console.log("\nbuzzWords before DELETE:\n", buzzWords);
+      buzzWords = buzzWords.filter(element => {
+        return element.buzzword !== req.body.buzzword;
+      });
+      console.log("\nbuzzWords after DELETE:\n", buzzWords);
+      deletedFlag = true;
+      return deletedFlag;
+    }
+    else {
+      console.log("\nError with deleting buzzword.");
+      deletedFlag = false;
+      return deletedFlag;
+    }
   });
+  res.send(`{success: ${deletedFlag}}`);
 });
 
 //POST "/reset" route
