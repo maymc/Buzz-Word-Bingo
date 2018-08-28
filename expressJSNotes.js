@@ -55,11 +55,11 @@ app.use(express.static('public'));
 
 //Things are loading slow because it is loading from the hard drive. We will learn about caching
 
-app.get('/', (req, res) => {
-  // res.send('hello world');
-  //takes in a path, dirname is an absolute path. it is safer.
-  res.sendFile(__dirname + '/public/index.html');
-});
+// app.get('/', (req, res) => {
+//   // res.send('hello world');
+//   //takes in a path, dirname is an absolute path. it is safer.
+//   res.sendFile(__dirname + '/public/index.html');
+// });
 
 app.get('/css/styles.css', (req, res) => {
   res.sendFile(__dirname + '/public/styles.css');
